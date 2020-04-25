@@ -35,16 +35,3 @@
 [valorizar]
 [vibrar]
 [viciar]
-
-
-Apenas no âmbito cultural:
-
-[apavorar]
-[brilhar]
-[comover]
-[devorar]
-[prender]
-[rir]
-[saborear]
-[surpreender]
-[tocar]

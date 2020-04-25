@@ -11,13 +11,16 @@ import unicodedata
 import matplotlib.pyplot as plt
 import pandas as pd 
 import numpy as np
+from features import FeatureExtractor
 
 nltk.download('punkt')
 
-base_path = 'reli'
+base_path = 'data/reli'
 ReLiTrain = []
+ReLiTrainSentences = []
 TweetSentBRTrain = []
 covidOptionsBRTest = []
+feats = FeatureExtractor()
 
 files = [os.path.join(base_path, f) for f in os.listdir(base_path)]
 
@@ -27,7 +30,8 @@ for file in files:
         content = content_file.read()
         all = re.findall('\[.*?\]', content)
         for w in all:
-            ReLiTrain.append((w[1:-1], t))
+          ReLiTrain.append((w[1:-1], t))
+          ReLiTrainSentences.append(w[1:-1])
 
 
 def clean_tweet(tweet):
@@ -35,22 +39,23 @@ def clean_tweet(tweet):
     return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", string).split())
     
 # Train by Henrico DATASET
-filePos = open('henrico/trainTT.pos', 'r')
-fileNeg = open('henrico/trainTT.neg', 'r')
+filePos = open('data/tweent/trainTT.pos', 'r')
+fileNeg = open('data/tweent/trainTT.neg', 'r')
 for line in filePos:
-  TweetSentBRTrain.append((clean_tweet(line[19:]), 1))
+  TweetSentBRTrain.append(clean_tweet(line[19:]))
 for line in fileNeg:
-  TweetSentBRTrain.append((clean_tweet(line[19:]), -1))
+  TweetSentBRTrain.append(clean_tweet(line[19:]))
 
 
 # Make test Using CovidOptions.BR
 # ----------------------
-
-file = csv.reader(open('test/SentCovid-BR.csv'), delimiter=',')
+file = csv.reader(open('data/test/SentCovid-BR.csv'), delimiter=',')
 for line in file:
   tweet = line[1]
   sentiment = int(line[2])
   covidOptionsBRTest.append((clean_tweet(tweet), sentiment))
+
+
 
 with open('resultado.txt', 'a') as f:
       
@@ -104,7 +109,7 @@ with open('resultado.txt', 'a') as f:
     # df2["sentiment"].value_counts(sort=False).plot(kind='barh')
     # plt.show()
 
-    #Classification Report
+    # Classification Report
     print("\nClassification Report of Naive Bayes", file=f)
     print(classification_report(y_test, y_pred_cl), file=f)
 
@@ -112,28 +117,33 @@ with open('resultado.txt', 'a') as f:
     print(classification_report(y_test, y_pred_dtc), file=f)
 
 
-  # Experiments
+  # # Experiments
 
-  Experiment - Train With ReLI 
+  # Experiment - Train With ReLI 
   print("1. Experimento - Treinamento apenas com o ReLi", file=f)
   Experiment(ReLiTrain, covidOptionsBRTest)
 
+
   # Experiment - Train With TweetSentBR 
   print("2. Experimento - Treinamento com TweetSentBR", file=f)
-  Experiment(TweetSentBRTrain, covidOptionsBRTest)
+  Experiment(feats.get_representation(TweetSentBRTrain), covidOptionsBRTest)
 
 
   # Experiment - Train With ReLI + TweetSentBR 
   print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
-  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest)
+
+  Experiment(feats.get_representation(ReLiTrainSentences + TweetSentBRTrain), covidOptionsBRTest)
+
 
   # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
   print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
   train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
-  Experiment(ReLiTrain + TweetSentBRTrain + train, test)
+  trainSentences = []
+  for sentence, sentiment in train:
+    trainSentences.append(sentence)
+  Experiment(feats.get_representation(ReLiTrainSentences + TweetSentBRTrain + trainSentences), test)
 
 
-  # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
+  # Experiment - Train With CovidOptions.BR
   print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
-  train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
-  Experiment(train, test)
+  Experiment(feats.get_representation(trainSentences), test)
