@@ -1,7 +1,9 @@
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
-from textblob.classifiers import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, precision_score, f1_score, recall_score, classification_report
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC, LinearSVC
+
+from sklearn.metrics import accuracy_score, precision_score, f1_score, r2_score, recall_score, classification_report
 from sklearn.model_selection import train_test_split
 import os
 import re
@@ -11,16 +13,15 @@ import unicodedata
 import matplotlib.pyplot as plt
 import pandas as pd 
 import numpy as np
-from features import FeatureExtractor
+from data.tweentsentbr.features import FeatureExtractor
+from sklearn.naive_bayes import GaussianNB
 
 nltk.download('punkt')
 
 base_path = 'data/reli'
 ReLiTrain = []
-ReLiTrainSentences = []
 TweetSentBRTrain = []
 covidOptionsBRTest = []
-feats = FeatureExtractor()
 
 files = [os.path.join(base_path, f) for f in os.listdir(base_path)]
 
@@ -31,7 +32,6 @@ for file in files:
         all = re.findall('\[.*?\]', content)
         for w in all:
           ReLiTrain.append((w[1:-1], t))
-          ReLiTrainSentences.append(w[1:-1])
 
 
 def clean_tweet(tweet):
@@ -39,12 +39,12 @@ def clean_tweet(tweet):
     return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", string).split())
     
 # Train by Henrico DATASET
-filePos = open('data/tweent/trainTT.pos', 'r')
-fileNeg = open('data/tweent/trainTT.neg', 'r')
+filePos = open('data/tweentsentbr/trainTT.pos', 'r')
+fileNeg = open('data/tweentsentbr/trainTT.neg', 'r')
 for line in filePos:
-  TweetSentBRTrain.append(clean_tweet(line[19:]))
+  TweetSentBRTrain.append((clean_tweet(line[19:]), 1))
 for line in fileNeg:
-  TweetSentBRTrain.append(clean_tweet(line[19:]))
+  TweetSentBRTrain.append((clean_tweet(line[19:]), -1))
 
 
 # Make test Using CovidOptions.BR
@@ -58,92 +58,81 @@ for line in file:
 
 
 with open('resultado.txt', 'a') as f:
-      
+  def evaluate_model(model, X, y, X_test, y_test):
+    model.fit(X, y) 
+    y_pred = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    f1_score_variable = f1_score(y_test, y_pred)
+    recall_score_variable = recall_score(y_test, y_pred)
+    print("Accuracy", accuracy, file=f)
+    print("precision", precision, file=f)
+    print("f1_score", f1_score_variable, file=f)
+    print("recall_score", recall_score_variable, file=f)
+    print("Classification report", file=f)
+    print(classification_report(y_test, y_pred), file=f)
+    print("\n", file=f)
+
   def Experiment(trainData, testData):
-    dtc = DecisionTreeClassifier(trainData)
-    cl = NaiveBayesClassifier(trainData)
+    feats = FeatureExtractor()
+    train_sentences = []
+    train_labels = []
+    test_sentences = []
+    test_labels = []
 
-    # Make y_test and y_pred
-    y_test = []
-    y_pred_dtc = []
-    y_pred_cl = []
+    for sentence, sentiment in trainData:
+      train_sentences.append(sentence)
+      train_labels.append(sentiment)
 
-    for key, value in testData:
-      y_test.append(value)
-      y_pred_dtc.append(dtc.classify(key))
-      y_pred_cl.append(cl.classify(key))
+    for sentence, sentiment in testData:
+      test_sentences.append(sentence)
+      test_labels.append(sentiment)
 
-    # Precision
-    print("Precision", file=f)
-    print('NaiveBayesClassifier:', precision_score(y_test, y_pred_cl), file=f)
-    print('DecisionTreeClassifier:', precision_score(y_test, y_pred_dtc), file=f)
+    feats.make_bow(train_sentences, test_sentences)
 
-    #Accuracy
-    print("\nAccuracy", file=f)
-    print('NaiveBayesClassifier:', cl.accuracy(testData), file=f)
-    print('DecisionTreeClassifier:', dtc.accuracy(testData), file=f)
+    X_train = feats.get_representation(train_sentences)
+    y_train = np.array(train_labels)
 
-    # Score
-    print("\nF1 Score", file=f)
-    print('NaiveBayesClassifier:', f1_score(y_test, y_pred_cl), file=f)
-    print('DecisionTreeClassifier:', f1_score(y_test, y_pred_dtc), file=f)
+    X_test  = feats.get_representation(test_sentences)
+    y_test = np.array(test_labels)
 
-    # Recall
-    print("\nRecall", file=f)
-    print('NaiveBayesClassifier:', recall_score(y_test, y_pred_cl), file=f)
-    print('DecisionTreeClassifier:', recall_score(y_test, y_pred_dtc), file=f)
+    print("----------- DecisionTreeClassifier --------------", file=f)
+    evaluate_model(DecisionTreeClassifier(), X_train, y_train, X_test, y_test)
 
+    print("----------- NaiveBayesClassifier --------------", file=f)
+    evaluate_model(GaussianNB(), X_train, y_train, X_test, y_test)
 
-    # # DATASET Train PLOT 
-    # # -------------
-    # print("\n Divisão do dataset de treino")
-    # df = pd.DataFrame(train, columns=["text", "sentiment"]) 
-    # df["sentiment"].value_counts(sort=False).plot(kind='barh')
-    # plt.ion()
-    # plt.show()
+    print("----------- SVM - SVC(kernel='poly', degree=2) --------------", file=f)
+    evaluate_model(SVC(kernel='poly', degree=2), X_train, y_train, X_test, y_test)
 
-    # # DATASET Test PLOT 
-    # # -------------
-    # print("\n Divisão do dataset de teste")
-    # df2 = pd.DataFrame(testData, columns=["text", "sentiment"]) 
-    # df2["sentiment"].value_counts(sort=False).plot(kind='barh')
-    # plt.show()
+    print("----------- SVM - LinearSVC --------------", file=f)
+    evaluate_model(LinearSVC(C=0.25, penalty="l1", dual=False, random_state=1), X_train, y_train, X_test, y_test)
 
-    # Classification Report
-    print("\nClassification Report of Naive Bayes", file=f)
-    print(classification_report(y_test, y_pred_cl), file=f)
-
-    print("\nClassification Report of Decision Tree", file=f)
-    print(classification_report(y_test, y_pred_dtc), file=f)
+    print("\n\n", file=f)
 
 
-  # # Experiments
-
+  # Experiments
   # Experiment - Train With ReLI 
   print("1. Experimento - Treinamento apenas com o ReLi", file=f)
   Experiment(ReLiTrain, covidOptionsBRTest)
 
 
-  # Experiment - Train With TweetSentBR 
+  # # Experiment - Train With TweetSentBR 
   print("2. Experimento - Treinamento com TweetSentBR", file=f)
-  Experiment(feats.get_representation(TweetSentBRTrain), covidOptionsBRTest)
+  Experiment(TweetSentBRTrain, covidOptionsBRTest)
 
 
   # Experiment - Train With ReLI + TweetSentBR 
   print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
-
-  Experiment(feats.get_representation(ReLiTrainSentences + TweetSentBRTrain), covidOptionsBRTest)
+  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest)
 
 
   # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
   print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
   train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
-  trainSentences = []
-  for sentence, sentiment in train:
-    trainSentences.append(sentence)
-  Experiment(feats.get_representation(ReLiTrainSentences + TweetSentBRTrain + trainSentences), test)
-
+  Experiment(ReLiTrain + TweetSentBRTrain + train, test)
 
   # Experiment - Train With CovidOptions.BR
   print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
-  Experiment(feats.get_representation(trainSentences), test)
+  Experiment(train, test)
