@@ -109,6 +109,9 @@ with open('resultado.txt', 'a') as f:
     print("----------- SVM - LinearSVC --------------", file=f)
     evaluate_model(LinearSVC(C=0.25, penalty="l1", dual=False, random_state=1), X_train, y_train, X_test, y_test)
 
+    print("----------- SVM - SVC(kernel='sigmoid') --------------", file=f)
+    evaluate_model(SVC(kernel='sigmoid'), X_train, y_train, X_test, y_test)
+
     print("\n\n", file=f)
 
 
