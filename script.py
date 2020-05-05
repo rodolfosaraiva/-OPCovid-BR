@@ -152,25 +152,25 @@ with open('resultado.txt', 'a') as f:
   for sentence, sentiment in covidOptionsBRTest:
     sentencas.append(sentence)
 
-  covidOptionsBRcomAspectos = aspects.get_representation_teste(sentencas)
+  covidOptionsBRcomAspectos = aspects.get_representation_tres(sentencas)
 
-  teste_train = aspects.get_representation_teste_dois(sentencas)
+  # teste_train = aspects.get_representation_teste_dois(sentencas)
 
-  cl = NaiveBayesClassifier(teste_train)
+  # cl = NaiveBayesClassifier(teste_train)
 
-  covidOptionsBRcomAspectosDois = []
+  # covidOptionsBRcomAspectosDois = []
 
-  for sentenca in sentencas:
-    covidOptionsBRcomAspectosDois.append((sentenca, cl.classify(sentenca)))
+  # for sentenca in sentencas:
+  #   covidOptionsBRcomAspectosDois.append((sentenca, cl.classify(sentenca)))
 
-  # pd.DataFrame(covidOptionsBRcomAspectos).to_csv("file_metodo_um.csv")
-  # pd.DataFrame(covidOptionsBRcomAspectosDois).to_csv("file_metodo_dois.csv")
+  # # pd.DataFrame(covidOptionsBRcomAspectos).to_csv("file_metodo_um.csv")
+  # # pd.DataFrame(covidOptionsBRcomAspectosDois).to_csv("file_metodo_dois.csv")
 
 
-  # # Experimento com aspectos
-  train, test = train_test_split(covidOptionsBRcomAspectos, test_size=0.25)
-  Experiment(train,test, aspects)
+  # # # Experimento com aspectos
+  # train, test = train_test_split(covidOptionsBRcomAspectos, test_size=0.25)
+  # Experiment(train,test, aspects)
   
-    # # Experimento com aspectos
-  train, test = train_test_split(covidOptionsBRcomAspectosDois, test_size=0.25)
-  Experiment(train,test, aspects)
+  #   # # Experimento com aspectos
+  # train, test = train_test_split(covidOptionsBRcomAspectosDois, test_size=0.25)
+  # Experiment(train,test, aspects)
