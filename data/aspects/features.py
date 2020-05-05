@@ -3,6 +3,8 @@ import nlpnet
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import HashingVectorizer
 from scipy import sparse
+import unicodedata
+import re
 
 class AspectExtractor:
 
@@ -24,10 +26,15 @@ class AspectExtractor:
 			if verbose: print('senti_words ',end='')
 			self.make_sentilex()
 			self.sentilex_index = self.rep_size
-			self.rep_size += 6
+			self.rep_size += 5
 
 		if self.verbose: print()
 
+
+	def clean_tweet(self, tweet):
+	    string = str(unicodedata.normalize('NFKD', tweet).encode('ascii','ignore'))[2:]
+	    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", string).split())
+	    
 
 	def make_bow(self, *args):
 		print("")
@@ -38,7 +45,8 @@ class AspectExtractor:
 			for line in sentilex_file:
 				if line[0] != '#':
 					line = line.strip().split(',')
-					self.sentilex[line[1]] = line[0]
+					self.sentilex[self.clean_tweet(line[1])] = line[0]
+
 
 	def get_representation(self, sentences):
 		if self.verbose: print(len(sentences))
@@ -47,9 +55,8 @@ class AspectExtractor:
 			"economia": 0,
 			"educação-ciência": 1,
 			"localização": 2,
-			"pessoa": 3,
-			"Político-social": 4,
-			"saúde": 5
+			"Político-social": 3,
+			"saúde": 4
 		}
 		new_sentences = np.zeros((len(sentences), self.rep_size))
 
@@ -57,14 +64,15 @@ class AspectExtractor:
 			if self.verbose: print('%i/%i' % (i,len(sentences)),end='\r')
 
 			if self.senti_words:
-				sent_words = [0,0,0,0,0,0]
+				sent_words = [0,0,0,0,0]
 				for sentilexWord in self.sentilex.keys():
 					if sentilexWord in sent:
 						index = myDict[self.sentilex[sentilexWord]]
 						sent_words[index] += 1
-				new_sentences[i,self.sentilex_index:self.sentilex_index+6] += np.array(sent_words)
+				new_sentences[i,self.sentilex_index:self.sentilex_index+5] += np.array(sent_words)
 
 		if self.verbose: print('%i/%i' % (len(sentences),len(sentences)))
+
 		return new_sentences
 
 
@@ -73,18 +81,18 @@ class AspectExtractor:
 		if self.verbose: print(self.rep_size)
 
 		new_sentences = np.zeros((len(sentences), len(self.sentilex)))
-		print(new_sentences)
 		
 		for i, sent in enumerate(sentences):
 			if self.verbose: print('%i/%i' % (i,len(sentences)),end='\r')
 
 			if self.senti_words:
-				sent_words = [0,0,0,0,0,0]
+				sent_words = [0] * len(self.sentilex)
 				for sentilexWord in self.sentilex.keys():
 					if sentilexWord in sent:
-						index = myDict[self.sentilex[sentilexWord]]
+						list_values = list(self.sentilex.keys())
+						index = list_values.index(sentilexWord)
 						sent_words[index] += 1
-				new_sentences[i,self.sentilex_index:self.sentilex_index+6] += np.array(sent_words)
+				new_sentences[i,self.sentilex_index:self.sentilex_index+ len(self.sentilex)] += np.array(sent_words)
 
 		if self.verbose: print('%i/%i' % (len(sentences),len(sentences)))
 		return new_sentences
@@ -95,7 +103,6 @@ class AspectExtractor:
 			"economia",
 			"educação-ciência",
 			"localização",
-			"pessoa",
 			"Político-social",
 			"saúde"
 		]
@@ -127,7 +134,7 @@ class AspectExtractor:
 				j += 1
 
 			# Pega número maior
-			finalIndex = 5
+			finalIndex = 4
 			j = 0
 			for rep in representation:
 				if rep > representation[finalIndex]:
@@ -141,28 +148,3 @@ class AspectExtractor:
 
 		return new_sentences_classified
 
-
-
-
-	def get_representation_teste_dois(self, sentences):
-		myDict = {
-			"economia": 0,
-			"educação-ciência": 1,
-			"localização": 2,
-			"pessoa": 3,
-			"Político-social": 4,
-			"saúde": 5
-		}
-		new_sentences = []
-
-		for i, sent in enumerate(sentences):
-			if self.verbose: print('%i/%i' % (i,len(sentences)),end='\r')
-			sent = sent.split()
-
-			if self.senti_words:
-				sent_words = [0,0,0,0,0,0]
-				for word in sent:
-					if word in self.sentilex.keys():
-						new_sentences.append((word, self.sentilex[word]))
-
-		return new_sentences
