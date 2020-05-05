@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import numpy as np
 from data.tweentsentbr.features import FeatureExtractor
+from data.aspects.features import AspectExtractor
 from sklearn.naive_bayes import GaussianNB
 
 nltk.download('punkt')
@@ -22,6 +23,8 @@ base_path = 'data/reli'
 ReLiTrain = []
 TweetSentBRTrain = []
 covidOptionsBRTest = []
+feats = FeatureExtractor()
+aspects = AspectExtractor()
 
 files = [os.path.join(base_path, f) for f in os.listdir(base_path)]
 
@@ -63,19 +66,19 @@ with open('resultado.txt', 'a') as f:
     y_pred = model.predict(X_test)
 
     accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    f1_score_variable = f1_score(y_test, y_pred)
-    recall_score_variable = recall_score(y_test, y_pred)
+    # precision = precision_score(y_test, y_pred)
+    # f1_score_variable = f1_score(y_test, y_pred)
+    # recall_score_variable = recall_score(y_test, y_pred)
     print("Accuracy", accuracy, file=f)
-    print("precision", precision, file=f)
-    print("f1_score", f1_score_variable, file=f)
-    print("recall_score", recall_score_variable, file=f)
-    print("Classification report", file=f)
-    print(classification_report(y_test, y_pred), file=f)
+    # print("precision", precision, file=f)
+    # print("f1_score", f1_score_variable, file=f)
+    # print("recall_score", recall_score_variable, file=f)
+    # print("Classification report", file=f)
+    # print(classification_report(y_test, y_pred), file=f)
     print("\n", file=f)
 
-  def Experiment(trainData, testData):
-    feats = FeatureExtractor()
+  def Experiment(trainData, testData, extractor):
+    feats = extractor
     train_sentences = []
     train_labels = []
     test_sentences = []
@@ -115,27 +118,59 @@ with open('resultado.txt', 'a') as f:
     print("\n\n", file=f)
 
 
+
+
+
   # Experiments
   # Experiment - Train With ReLI 
-  print("1. Experimento - Treinamento apenas com o ReLi", file=f)
-  Experiment(ReLiTrain, covidOptionsBRTest)
+  # print("1. Experimento - Treinamento apenas com o ReLi", file=f)
+  # Experiment(ReLiTrain, covidOptionsBRTest)
 
 
-  # # Experiment - Train With TweetSentBR 
-  print("2. Experimento - Treinamento com TweetSentBR", file=f)
-  Experiment(TweetSentBRTrain, covidOptionsBRTest)
+  # # # Experiment - Train With TweetSentBR 
+  # print("2. Experimento - Treinamento com TweetSentBR", file=f)
+  # Experiment(TweetSentBRTrain, covidOptionsBRTest)
 
 
-  # Experiment - Train With ReLI + TweetSentBR 
-  print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
-  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest)
+  # # Experiment - Train With ReLI + TweetSentBR 
+  # print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
+  # Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest)
 
 
-  # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
-  print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
-  train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
-  Experiment(ReLiTrain + TweetSentBRTrain + train, test)
+  # # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
+  # print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
+  # train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
+  # Experiment(ReLiTrain + TweetSentBRTrain + train, test)
 
-  # Experiment - Train With CovidOptions.BR
-  print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
-  Experiment(train, test)
+  # # Experiment - Train With CovidOptions.BR
+  # print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
+  # Experiment(train, test, feats)
+
+
+
+  sentencas = []
+  for sentence, sentiment in covidOptionsBRTest:
+    sentencas.append(sentence)
+
+  covidOptionsBRcomAspectos = aspects.get_representation_teste(sentencas)
+
+  teste_train = aspects.get_representation_teste_dois(sentencas)
+
+  cl = NaiveBayesClassifier(teste_train)
+
+  covidOptionsBRcomAspectosDois = []
+
+  for sentenca in sentencas:
+    covidOptionsBRcomAspectosDois.append((sentenca, cl.classify(sentenca)))
+
+  # pd.DataFrame(covidOptionsBRcomAspectos).to_csv("file_metodo_um.csv")
+  # pd.DataFrame(covidOptionsBRcomAspectosDois).to_csv("file_metodo_dois.csv")
+
+
+  # # Experimento com aspectos
+  train, test = train_test_split(covidOptionsBRcomAspectos, test_size=0.25)
+  Experiment(train,test, aspects)
+  
+    # # Experimento com aspectos
+  train, test = train_test_split(covidOptionsBRcomAspectosDois, test_size=0.25)
+  Experiment(train,test, aspects)
