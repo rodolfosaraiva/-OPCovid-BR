@@ -119,31 +119,30 @@ with open('resultado.txt', 'a') as f:
 
 
 
-  # Experiments
-  # Experiment - Train With ReLI 
-  print("1. Experimento - Treinamento apenas com o ReLi", file=f)
-  Experiment(ReLiTrain, covidOptionsBRTest)
+  # # Experiments
+  # # Experiment - Train With ReLI 
+  # print("1. Experimento - Treinamento apenas com o ReLi", file=f)
+  # Experiment(ReLiTrain, covidOptionsBRTest)
 
 
-  # # Experiment - Train With TweetSentBR 
-  print("2. Experimento - Treinamento com TweetSentBR", file=f)
-  Experiment(TweetSentBRTrain, covidOptionsBRTest)
+  # # # Experiment - Train With TweetSentBR 
+  # print("2. Experimento - Treinamento com TweetSentBR", file=f)
+  # Experiment(TweetSentBRTrain, covidOptionsBRTest)
 
 
-  # Experiment - Train With ReLI + TweetSentBR 
-  print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
-  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest)
+  # # Experiment - Train With ReLI + TweetSentBR 
+  # print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
+  # Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest)
 
 
-  # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
-  print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
-  train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
-  Experiment(ReLiTrain + TweetSentBRTrain + train, test)
+  # # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
+  # print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
+  # train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
+  # Experiment(ReLiTrain + TweetSentBRTrain + train, test)
 
-  # Experiment - Train With CovidOptions.BR
-  print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
-  Experiment(train, test)
-
+  # # Experiment - Train With CovidOptions.BR
+  # print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
+  # Experiment(train, test)
 
 
   # ASPECTOS
@@ -153,9 +152,9 @@ with open('resultado.txt', 'a') as f:
   for sentence, sentiment in covidOptionsBRTest:
     sentencas.append(sentence)
 
-  covidOptionsBRcomAspectos = aspects.get_representation_teste(sentencas)
+  covidOptionsBRcomAspectos = aspects.get_sentences_classified(sentencas)
 
-  # pd.DataFrame(covidOptionsBRcomAspectos).to_csv("file_metodo_um.csv")
+  pd.DataFrame(covidOptionsBRcomAspectos).to_csv("file_metodo_um.csv")
 
   # # Experimento com aspectos
   train, test = train_test_split(covidOptionsBRcomAspectos, test_size=0.25)
