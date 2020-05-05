@@ -131,14 +131,22 @@ economia,venda internacional
 economia,auxílio financeiro
 economia,auxilio financeiro
 educação-ciência,UFRRJ
+educação-ciência,ufrrj
 educação-ciência,alimentação de estudantes
 educação-ciência,instituição privada
+educação-ciência,instituiçoes privada
 educação-ciência,sem aula presencial
+educação-ciência,sem aulas presenciais
 educação-ciência,ICMC
+educação-ciência,icmc
 educação-ciência,UFMG
+educação-ciência,ufmg
 educação-ciência,USP
+educação-ciência,usp
 educação-ciência,cientista
+educação-ciência,cientistas
 educação-ciência,valor da mensalidade
+educação-ciência,valores das mensalidades
 localização,EUA
 localização,argentina
 localização,buenos aires
