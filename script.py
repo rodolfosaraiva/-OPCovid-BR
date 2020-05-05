@@ -23,8 +23,6 @@ base_path = 'data/reli'
 ReLiTrain = []
 TweetSentBRTrain = []
 covidOptionsBRTest = []
-feats = FeatureExtractor()
-aspects = AspectExtractor()
 
 files = [os.path.join(base_path, f) for f in os.listdir(base_path)]
 
@@ -77,7 +75,7 @@ with open('resultado.txt', 'a') as f:
     print(classification_report(y_test, y_pred), file=f)
     print("\n", file=f)
 
-  def Experiment(trainData, testData, extractor):
+  def Experiment(trainData, testData, extractor = FeatureExtractor()):
     feats = extractor
     train_sentences = []
     train_labels = []
@@ -124,32 +122,33 @@ with open('resultado.txt', 'a') as f:
   # Experiments
   # Experiment - Train With ReLI 
   print("1. Experimento - Treinamento apenas com o ReLi", file=f)
-  Experiment(ReLiTrain, covidOptionsBRTest, feats)
+  Experiment(ReLiTrain, covidOptionsBRTest)
 
 
   # # Experiment - Train With TweetSentBR 
   print("2. Experimento - Treinamento com TweetSentBR", file=f)
-  Experiment(TweetSentBRTrain, covidOptionsBRTest,feats)
+  Experiment(TweetSentBRTrain, covidOptionsBRTest)
 
 
   # Experiment - Train With ReLI + TweetSentBR 
   print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
-  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest, feats)
+  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest)
 
 
   # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
   print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
   train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
-  Experiment(ReLiTrain + TweetSentBRTrain + train, test, feats)
+  Experiment(ReLiTrain + TweetSentBRTrain + train, test)
 
   # Experiment - Train With CovidOptions.BR
   print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
-  Experiment(train, test, feats)
+  Experiment(train, test)
 
 
 
   # ASPECTOS
   # ----------
+  aspects = AspectExtractor()
   sentencas = []
   for sentence, sentiment in covidOptionsBRTest:
     sentencas.append(sentence)
