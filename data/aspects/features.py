@@ -64,6 +64,30 @@ class AspectExtractor:
 	def get_representation(self, sentences):
 		if self.verbose: print(len(sentences))
 		if self.verbose: print(self.rep_size)
+
+		new_sentences = np.zeros((len(sentences), len(self.sentilex)))
+
+		for i, sent in enumerate(sentences):
+			if self.verbose: print('%i/%i' % (i,len(sentences)),end='\r')
+			
+			sent = self.lemmatizer(sent)
+
+			if self.senti_words:
+				sent_words = [0] * len(self.sentilex)
+				for sentilexWord in self.sentilex.keys():
+					if sentilexWord in sent:
+						list_values = list(self.sentilex.keys())
+						index = list_values.index(sentilexWord)
+						sent_words[index] += 1
+				new_sentences[i,self.sentilex_index:self.sentilex_index+ len(self.sentilex)] += np.array(sent_words)
+
+		if self.verbose: print('%i/%i' % (len(sentences),len(sentences)))
+		return new_sentences
+
+
+	def get_representation_sentences_classified(self, sentences):
+		if self.verbose: print(len(sentences))
+		if self.verbose: print(self.rep_size)
 		myDict = {
 			"economia": 0,
 			"educação-ciência": 1,
@@ -100,7 +124,7 @@ class AspectExtractor:
 			"saúde"
 		]
 
-		new_sentences = self.get_representation(sentences)
+		new_sentences = self.get_representation_sentences_classified(sentences)
 
 		new_sentences_classified = []
 		i = 0
