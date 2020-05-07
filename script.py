@@ -117,34 +117,34 @@ with open('resultado.txt', 'a') as f:
 
 
 
-  Experiments
-  Experiment - Train With ReLI 
+  # Experiments
+  # Experiment - Train With ReLI 
   print("1. Experimento - Treinamento apenas com o ReLi", file=f)
-  feats =  = FeatureExtractor()
-  Experiment(ReLiTrain, covidOptionsBRTest, fets)
+  feats =  FeatureExtractor()
+  Experiment(ReLiTrain, covidOptionsBRTest, feats)
 
 
   # # Experiment - Train With TweetSentBR 
   print("2. Experimento - Treinamento com TweetSentBR", file=f)
-  feats =  = FeatureExtractor()
+  feats =  FeatureExtractor()
   Experiment(TweetSentBRTrain, covidOptionsBRTest, feats)
 
 
   # Experiment - Train With ReLI + TweetSentBR 
   print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
-  feats =  = FeatureExtractor() 
+  feats =  FeatureExtractor() 
   Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest, feats)
 
 
   # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
   print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
   train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
-  feats =  = FeatureExtractor() 
+  feats =  FeatureExtractor() 
   Experiment(ReLiTrain + TweetSentBRTrain + train, test, feats)
 
   # Experiment - Train With CovidOptions.BR
   print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
-  feats =  = FeatureExtractor() 
+  feats =  FeatureExtractor() 
   Experiment(train, test, feats)
 
 
