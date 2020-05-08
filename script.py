@@ -58,6 +58,7 @@ for line in file:
 
 
 
+
 with open('resultado.txt', 'a') as f:
   def evaluate_model(model, X, y, X_test, y_test):
     model.fit(X, y) 
@@ -82,6 +83,7 @@ with open('resultado.txt', 'a') as f:
     test_sentences = []
     test_labels = []
 
+
     for sentence, sentiment in trainData:
       train_sentences.append(sentence)
       train_labels.append(sentiment)
@@ -97,6 +99,10 @@ with open('resultado.txt', 'a') as f:
 
     X_test  = feats.get_representation(test_sentences)
     y_test = np.array(test_labels)
+
+    print(train_sentences[0])
+    print(X_train[0])
+    print(y_train[0])
 
     print("----------- DecisionTreeClassifier --------------", file=f)
     evaluate_model(DecisionTreeClassifier(), X_train, y_train, X_test, y_test)
@@ -155,11 +161,20 @@ with open('resultado.txt', 'a') as f:
   for sentence, sentiment in covidOptionsBRTest:
     sentencas.append(sentence)
 
+  # --- COM LEMATIZAÇÃO ----
   covidOptionsBRcomAspectos = aspects.get_sentences_classified(sentencas)
-
   pd.DataFrame(covidOptionsBRcomAspectos).to_csv("file_metodo_um.csv")
 
-  # # Experimento com aspectos
+  # --- SEM LEMATIZAÇÃO ----
+  # covidOptionsBRcomAspectos = []
+  # file = csv.reader(open('file_metodo_um.csv'), delimiter=',')
+  # for line in file:
+  #   tweet = line[1]
+  #   sentiment = line[2]
+  #   covidOptionsBRcomAspectos.append((clean_tweet(tweet), sentiment))
+
+
+  # Experimento com aspectos
   train, test = train_test_split(covidOptionsBRcomAspectos, test_size=0.25)
   print("EXTRA. Experimento - detectar qual é o assunto (educação,saúde,politico-social,etc)", file=f)
   Experiment(train,test, aspects)

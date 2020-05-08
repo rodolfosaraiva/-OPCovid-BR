@@ -59,6 +59,7 @@ class AspectExtractor:
 				if line[0] != '#':
 					line = line.strip().split(',')
 					self.sentilex[self.clean_tweet(line[1])] = line[0]
+					# self.sentilex[line[1]] = line[0]
 
 
 	def get_representation(self, sentences):
@@ -69,7 +70,7 @@ class AspectExtractor:
 
 		for i, sent in enumerate(sentences):
 			if self.verbose: print('%i/%i' % (i,len(sentences)),end='\r')
-			
+
 			sent = self.lemmatizer(sent)
 
 			if self.senti_words:
@@ -136,17 +137,15 @@ class AspectExtractor:
 			j = 0
 			for rep in representation:
 				if j == 0:
-					representation[j] *= 1.1
+					representation[j] *= 1
 				if j == 1:
-					representation[j] *= 1.1
+					representation[j] *= 1
 				if j == 2:
-					representation[j] *= 1.1				
+					representation[j] *= 1			
 				if j == 3:
-					representation[j] *= 1.1
-				if j == 4:
-					representation[j] *= 1.5
-				if j == 5:
 					representation[j] *= 2
+				if j == 4:
+					representation[j] *= 3
 
 				j += 1
 

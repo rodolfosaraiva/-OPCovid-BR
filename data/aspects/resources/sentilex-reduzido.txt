@@ -1,6 +1,19 @@
 saúde,caso
 saúde,contaminação
 saúde,curva
+Político-social,alarmismo do coronavírus
+Político-social,avalanche de cadáveres
+Político-social,ação de combate
+Político-social,ação preventiva
+localização,bh
+localização,bhte
+Político-social,bolsominio
+Político-social,bolsomorte
+Político-social,bolsonero
+saúde,Covid-19
+Político-social,confinamento
+Político-social,distanciamento social intermitente
+saúde,exame
 saúde,lixo domiciliar
 saúde,pico
 saúde,cura
@@ -44,6 +57,12 @@ saúde,médico
 saúde,conselho de medicina
 saúde,OMS
 saúde,higiene
+economia,redução de salário
+saúde,doença do coração
+Político-social,estratégia de isolamento
+Político-social,fake
+saúde,gente morrendo
+localização,sp
 economia,banco mundial
 economia,agricultura brasileira
 economia,ajuda aos estados e municípios
@@ -188,6 +207,34 @@ saúde,pessoa contaminada
 saúde,pessoa diagnosticada
 Político-social,distanciamento social
 Político-social,tentativa de derrubar o bolsonaro
-saúde,vítima
+saúde, vítima
 Político-social,gripezinha
 saúde,hospedeiro do coronavírus
+Político-social,helder
+saúde,saúde
+Político-social,imprensa vermelha
+Político-social,jornal americano
+Político-social,lei de acesso à informação
+Político-social,live nxzero
+Político-social,lockdown
+Político-social,lock down
+saúde,mandeta
+Político-social,medida normativa
+Político-social,minimizando o coronavírus
+Político-social,nações unidas
+economia,parcela do auxílio emergencial
+economia,plano de estímulo
+saúde,remédio
+saúde,risco de infecção
+saúde,risco de transmissão
+saúde,roubo de teste
+saúde,taxa de mortalidade
+saúde,unidade básica de saúde
+saúde,transmissor assintomático
+Político-social,video conferêcia
+Político-social,videoconferência
+saúde,vítima
+saúde,vítima fatal
+Político-social,witzel
+Político-social,zé ninguém de país emergente
+saúde,índice de cura

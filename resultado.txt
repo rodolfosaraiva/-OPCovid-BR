@@ -367,39 +367,38 @@ weighted avg       0.47      0.47      0.47       150
 
 
 
-
-EXTRA. Experimento - detectar qual é o assunto (educação,saúde,politico-social,etc)
+EXTRA. Experimento COM LEMATIZAÇÃO - detectar qual é o assunto (educação,saúde,politico-social,etc)
 ----------- DecisionTreeClassifier --------------
-Accuracy 0.7933333333333333
+Accuracy 0.7533333333333333
 Classification report
                   precision    recall  f1-score   support
 
- Político-social       0.63      0.59      0.61        29
-        economia       0.00      0.00      0.00         1
-educação-ciência       0.60      1.00      0.75         3
-     localização       0.78      0.82      0.80        22
-           saúde       0.85      0.85      0.85        95
+ Político-social       0.61      0.68      0.64        25
+        economia       0.00      0.00      0.00         6
+educação-ciência       0.67      1.00      0.80         2
+     localização       0.62      0.65      0.63        20
+           saúde       0.84      0.84      0.84        97
 
-        accuracy                           0.79       150
-       macro avg       0.57      0.65      0.60       150
-    weighted avg       0.79      0.79      0.79       150
+        accuracy                           0.75       150
+       macro avg       0.55      0.63      0.58       150
+    weighted avg       0.73      0.75      0.74       150
 
 
 
 ----------- NaiveBayesClassifier --------------
-Accuracy 0.36666666666666664
+Accuracy 0.5
 Classification report
                   precision    recall  f1-score   support
 
- Político-social       0.38      0.28      0.32        29
-        economia       0.12      1.00      0.22         1
-educação-ciência       0.05      1.00      0.10         3
-     localização       0.33      0.32      0.33        22
-           saúde       0.90      0.38      0.53        95
+ Político-social       0.47      0.72      0.57        25
+        economia       0.25      0.33      0.29         6
+educação-ciência       0.05      1.00      0.09         2
+     localização       0.50      0.30      0.37        20
+           saúde       0.94      0.48      0.64        97
 
-        accuracy                           0.37       150
-       macro avg       0.36      0.59      0.30       150
-    weighted avg       0.69      0.37      0.45       150
+        accuracy                           0.50       150
+       macro avg       0.44      0.57      0.39       150
+    weighted avg       0.76      0.50      0.57       150
 
 
 
@@ -408,49 +407,135 @@ Accuracy 0.7666666666666667
 Classification report
                   precision    recall  f1-score   support
 
- Político-social       0.60      0.41      0.49        29
-        economia       0.00      0.00      0.00         1
-educação-ciência       0.00      0.00      0.00         3
-     localização       0.94      0.68      0.79        22
-           saúde       0.79      0.93      0.85        95
+ Político-social       0.73      0.44      0.55        25
+        economia       0.00      0.00      0.00         6
+educação-ciência       0.00      0.00      0.00         2
+     localização       0.80      0.60      0.69        20
+           saúde       0.77      0.95      0.85        97
 
         accuracy                           0.77       150
-       macro avg       0.46      0.40      0.43       150
-    weighted avg       0.75      0.77      0.75       150
+       macro avg       0.46      0.40      0.42       150
+    weighted avg       0.72      0.77      0.73       150
 
 
 
 ----------- SVM - LinearSVC --------------
-Accuracy 0.7933333333333333
+Accuracy 0.7866666666666666
 Classification report
                   precision    recall  f1-score   support
 
- Político-social       0.75      0.41      0.53        29
-        economia       0.00      0.00      0.00         1
-educação-ciência       0.00      0.00      0.00         3
-     localização       0.94      0.68      0.79        22
-           saúde       0.79      0.97      0.87        95
+ Político-social       0.79      0.60      0.68        25
+        economia       0.00      0.00      0.00         6
+educação-ciência       0.00      0.00      0.00         2
+     localização       0.79      0.55      0.65        20
+           saúde       0.79      0.95      0.86        97
 
         accuracy                           0.79       150
-       macro avg       0.49      0.41      0.44       150
-    weighted avg       0.78      0.79      0.77       150
+       macro avg       0.47      0.42      0.44       150
+    weighted avg       0.74      0.79      0.76       150
 
 
 
 ----------- SVM - SVC(kernel='sigmoid') --------------
-Accuracy 0.8133333333333334
+Accuracy 0.7266666666666667
 Classification report
                   precision    recall  f1-score   support
 
- Político-social       0.71      0.52      0.60        29
-        economia       0.00      0.00      0.00         1
-educação-ciência       0.50      0.33      0.40         3
-     localização       0.94      0.73      0.82        22
-           saúde       0.83      0.95      0.88        95
+ Político-social       0.78      0.56      0.65        25
+        economia       0.00      0.00      0.00         6
+educação-ciência       0.00      0.00      0.00         2
+     localização       0.55      0.30      0.39        20
+           saúde       0.74      0.92      0.82        97
 
-        accuracy                           0.81       150
-       macro avg       0.60      0.51      0.54       150
-    weighted avg       0.81      0.81      0.80       150
+        accuracy                           0.73       150
+       macro avg       0.41      0.36      0.37       150
+    weighted avg       0.68      0.73      0.69       150
+
+
+
+EXTRA. Experimento SEM LEMATIZAÇÃO - detectar qual é o assunto (educação,saúde,politico-social,etc)
+----------- DecisionTreeClassifier --------------
+Accuracy 0.66
+Classification report
+                  precision    recall  f1-score   support
+
+ Político-social       0.44      0.55      0.49        20
+        economia       0.00      0.00      0.00         7
+educação-ciência       1.00      0.33      0.50         3
+     localização       0.27      0.38      0.32        16
+           saúde       0.79      0.78      0.79       104
+
+        accuracy                           0.66       150
+       macro avg       0.50      0.41      0.42       150
+    weighted avg       0.66      0.66      0.65       150
+
+
+
+----------- NaiveBayesClassifier --------------
+Accuracy 0.37333333333333335
+Classification report
+                  precision    recall  f1-score   support
+
+ Político-social       0.41      0.55      0.47        20
+        economia       0.08      0.57      0.14         7
+educação-ciência       0.20      0.67      0.31         3
+     localização       0.32      0.56      0.41        16
+           saúde       0.88      0.29      0.43       104
+
+        accuracy                           0.37       150
+       macro avg       0.38      0.53      0.35       150
+    weighted avg       0.71      0.37      0.42       150
+
+
+
+----------- SVM - SVC(kernel='poly', degree=2) --------------
+Accuracy 0.6933333333333334
+Classification report
+                  precision    recall  f1-score   support
+
+ Político-social       0.50      0.45      0.47        20
+        economia       0.00      0.00      0.00         7
+educação-ciência       0.00      0.00      0.00         3
+     localização       0.30      0.19      0.23        16
+           saúde       0.75      0.88      0.81       104
+
+        accuracy                           0.69       150
+       macro avg       0.31      0.30      0.30       150
+    weighted avg       0.62      0.69      0.65       150
+
+
+
+----------- SVM - LinearSVC --------------
+Accuracy 0.7266666666666667
+Classification report
+                  precision    recall  f1-score   support
+
+ Político-social       0.52      0.55      0.54        20
+        economia       0.00      0.00      0.00         7
+educação-ciência       0.00      0.00      0.00         3
+     localização       0.50      0.25      0.33        16
+           saúde       0.78      0.90      0.84       104
+
+        accuracy                           0.73       150
+       macro avg       0.36      0.34      0.34       150
+    weighted avg       0.66      0.73      0.69       150
+
+
+
+----------- SVM - SVC(kernel='sigmoid') --------------
+Accuracy 0.72
+Classification report
+                  precision    recall  f1-score   support
+
+ Político-social       0.50      0.55      0.52        20
+        economia       0.00      0.00      0.00         7
+educação-ciência       0.00      0.00      0.00         3
+     localização       0.50      0.19      0.27        16
+           saúde       0.77      0.90      0.83       104
+
+        accuracy                           0.72       150
+       macro avg       0.35      0.33      0.33       150
+    weighted avg       0.65      0.72      0.68       150
 
 
 
