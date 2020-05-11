@@ -16,6 +16,7 @@ import numpy as np
 from data.tweentsentbr.features import FeatureExtractor
 from data.aspects.features import AspectExtractor
 from sklearn.naive_bayes import GaussianNB
+import pickle
 
 nltk.download('punkt')
 
@@ -60,8 +61,12 @@ for line in file:
 
 
 with open('resultado.txt', 'a') as f:
-  def evaluate_model(model, X, y, X_test, y_test):
-    model.fit(X, y) 
+  def evaluate_model(model, X, y, X_test, y_test, modelName):
+    model.fit(X, y)
+
+    with open('data/modelos/' + modelName, 'wb') as file:
+        pickle.dump(model, file)
+
     y_pred = model.predict(X_test)
 
     accuracy = accuracy_score(y_test, y_pred)
@@ -76,7 +81,7 @@ with open('resultado.txt', 'a') as f:
     print(classification_report(y_test, y_pred), file=f)
     print("\n", file=f)
 
-  def Experiment(trainData, testData, extractor):
+  def Experiment(trainData, testData, extractor, basepath):
     feats = extractor
     train_sentences = []
     train_labels = []
@@ -101,19 +106,19 @@ with open('resultado.txt', 'a') as f:
     y_test = np.array(test_labels)
 
     print("----------- DecisionTreeClassifier --------------", file=f)
-    evaluate_model(DecisionTreeClassifier(), X_train, y_train, X_test, y_test)
+    evaluate_model(DecisionTreeClassifier(), X_train, y_train, X_test, y_test, basepath + 'DecisionTreeClassifier.pkl')
 
     print("----------- NaiveBayesClassifier --------------", file=f)
-    evaluate_model(GaussianNB(), X_train, y_train, X_test, y_test)
+    evaluate_model(GaussianNB(), X_train, y_train, X_test, y_test, basepath + 'GaussianNB.pkl')
 
     print("----------- SVM - SVC(kernel='poly', degree=2) --------------", file=f)
-    evaluate_model(SVC(kernel='poly', degree=2), X_train, y_train, X_test, y_test)
+    evaluate_model(SVC(kernel='poly', degree=2), X_train, y_train, X_test, y_test, basepath + 'SVC-poly.pkl')
 
     print("----------- SVM - LinearSVC --------------", file=f)
-    evaluate_model(LinearSVC(C=0.25, penalty="l1", dual=False, random_state=1), X_train, y_train, X_test, y_test)
+    evaluate_model(LinearSVC(C=0.25, penalty="l1", dual=False, random_state=1), X_train, y_train, X_test, y_test, basepath + 'LinearSVC.pkl')
 
     print("----------- SVM - SVC(kernel='sigmoid') --------------", file=f)
-    evaluate_model(SVC(kernel='sigmoid'), X_train, y_train, X_test, y_test)
+    evaluate_model(SVC(kernel='sigmoid'), X_train, y_train, X_test, y_test, basepath + 'SVC-sigmoid.pkl')
 
     print("\n\n", file=f)
 
@@ -123,31 +128,31 @@ with open('resultado.txt', 'a') as f:
   # Experiment - Train With ReLI 
   print("1. Experimento - Treinamento apenas com o ReLi", file=f)
   feats =  FeatureExtractor()
-  Experiment(ReLiTrain, covidOptionsBRTest, feats)
+  Experiment(ReLiTrain, covidOptionsBRTest, feats, 'polarity/reli/')
 
 
   # # Experiment - Train With TweetSentBR 
   print("2. Experimento - Treinamento com TweetSentBR", file=f)
   feats =  FeatureExtractor()
-  Experiment(TweetSentBRTrain, covidOptionsBRTest, feats)
+  Experiment(TweetSentBRTrain, covidOptionsBRTest, feats, 'polarity/tweentsentbr/')
 
 
   # Experiment - Train With ReLI + TweetSentBR 
   print("3. Experimento - Treinamento com ReLI + TweetSentBR", file=f)
   feats =  FeatureExtractor() 
-  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest, feats)
+  Experiment(ReLiTrain + TweetSentBRTrain, covidOptionsBRTest, feats, 'polarity/reli-tweentsentbr/')
 
 
   # Experiment - Train With ReLI + TweetSentBR + CovidOptions.BR
   print("4. Experimento - Treinamento com ReLI + TweetSentBR + CovidOptions.BR (.25 separado para teste)", file=f)
   train, test = train_test_split(covidOptionsBRTest, test_size=0.25)
   feats =  FeatureExtractor() 
-  Experiment(ReLiTrain + TweetSentBRTrain + train, test, feats)
+  Experiment(ReLiTrain + TweetSentBRTrain + train, test, feats, 'polarity/reli-tweentsentbr-covidopbr/')
 
   # Experiment - Train With CovidOptions.BR
   print("5. Experimento - CovidOptions.BR (.25 separado para teste)", file=f)
   feats =  FeatureExtractor() 
-  Experiment(train, test, feats)
+  Experiment(train, test, feats, 'polarity/covidopbr/')
 
 
   # ASPECTOS
@@ -173,4 +178,4 @@ with open('resultado.txt', 'a') as f:
   # Experimento com aspectos
   train, test = train_test_split(covidOptionsBRcomAspectos, test_size=0.25)
   print("EXTRA. Experimento - detectar qual é o assunto (educação,saúde,politico-social,etc)", file=f)
-  Experiment(train,test, aspects)
+  Experiment(train,test, aspects, 'aspects/')

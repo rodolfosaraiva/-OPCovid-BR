@@ -1,3 +1,4 @@
 __pycache__
 data/tweentsentbr/trainTT.neg
 data/tweentsentbr/trainTT.pos
+*.pkl
