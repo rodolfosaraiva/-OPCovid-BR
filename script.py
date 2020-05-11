@@ -100,10 +100,6 @@ with open('resultado.txt', 'a') as f:
     X_test  = feats.get_representation(test_sentences)
     y_test = np.array(test_labels)
 
-    print(train_sentences[0])
-    print(X_train[0])
-    print(y_train[0])
-
     print("----------- DecisionTreeClassifier --------------", file=f)
     evaluate_model(DecisionTreeClassifier(), X_train, y_train, X_test, y_test)
 
